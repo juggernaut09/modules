@@ -38,9 +38,11 @@ resource "aws_autoscaling_group" "example_asg"{
     min_size = var.min_size
     max_size = var.max_size
 
-    tag {
-        key = "Name"
-        value = "${var.cluster_name}-example_asg"
+    dynamic "tag" {
+	for_each = var.custom_tags
+        key = tag.key
+	value = tag.value
+        #value = "${var.cluster_name}-example_asg"
         propagate_at_launch = true
     }
 
