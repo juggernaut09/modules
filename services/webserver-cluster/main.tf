@@ -49,6 +49,27 @@ resource "aws_autoscaling_group" "example_asg"{
 }
 
 
+resource "aws_autoscaling_schedule" "scale_out_business_hours" {
+    count = var.enable_autoscaling ? 1 : 0
+    scheduled_action_name = "scale_out_during_business_hours"
+    min_size = 2
+    max_size = 10
+    desired_capacity = 10
+    recurrence = "0 9 * * *"
+    autoscaling_group_name = aws_autoscaling_group.example.name
+}
+
+resource "aws_autoscaling_schedule" "scale_in_business_hours" {
+    count = var.enable_autoscaling ? 1 : 0
+    scheduled_action_name = "scale_in_during_business_hours"
+    min_size = 2
+    max_size = 10
+    desired_capacity = 2
+    recurrence = "0 17 * * *"
+    autoscaling_group_name = aws_autoscaling_group.example.name
+}
+
+
 resource "aws_security_group" "elb_sg" {
 
     name = "${var.cluster_name}-elb_sg"
